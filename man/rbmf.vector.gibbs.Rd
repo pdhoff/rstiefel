@@ -1,0 +1,46 @@
+\name{rbmf.vector.gibbs}
+\alias{rbmf.vector.gibbs}
+\title{
+Gibbs Sampling for the Vector-variate Bingham-von Mises-Fisher Distribution
+}
+\description{
+Simulate a random normal vector from the Bingham-von Mises-Fisher distribution using Gibbs sampling.
+}
+\usage{
+rbmf.vector.gibbs(A, c, x)
+}
+\arguments{
+  \item{A}{
+a symmetric matrix.
+}
+  \item{c}{
+a vector with the same length as \code{x}. 
+}
+  \item{x}{
+the current value of the random normal vector.
+}
+}
+\value{
+a new value of the vector \code{x} obtained by Gibbs sampling.
+}
+\note{This provides one Gibbs scan. The function should be used iteratively.}
+
+\references{
+Hoff(2009)
+}
+\author{
+Peter Hoff
+}
+\examples{
+## The function is currently defined as
+function (A, c, x) 
+{
+    evdA <- eigen(A)
+    E <- evdA$vec
+    l <- evdA$val
+    y <- t(E) \%*\% x
+    d <- t(E) \%*\% c
+    x <- E \%*\% ry_bmf(y, l, d)
+    x/sqrt(sum(x^2))
+  }
+}

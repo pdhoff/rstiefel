@@ -1,0 +1,39 @@
+\name{ry_bmf}
+\alias{ry_bmf}
+\title{
+Helper Function for Sampling a Bingham-von Mises-Fisher-distributed Vector
+}
+\description{
+C interface to perform a Gibbs update of
+\code{y} with invariant distribution  proportional to
+\code{exp( sum(l*y^2+y*d) }
+with respect to the uniform measure on the sphere.
+}
+\usage{
+ry_bmf(y, l, d)
+}
+\arguments{
+  \item{y}{a normal vector.
+}
+  \item{l}{a vector.
+}
+  \item{d}{a vector.
+}
+}
+\value{
+a normal vector
+}
+\references{
+Hoff(2009)
+}
+\author{
+Peter Hoff
+}
+\examples{
+## The function is currently defined as
+function (y, l, d) 
+{
+    .C("ry_bmf", y = as.double(y), l = as.double(l), d = as.double(d), 
+        n = as.integer(length(y)))$y
+  }
+}

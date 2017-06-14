@@ -1,0 +1,13 @@
+Package: rstiefel
+Type: Package
+Title: Random orthonormal matrix generation on the Stiefel manifold
+Version: 0.10
+Date: 2014-11-24
+Author: Peter Hoff
+Maintainer: Peter Hoff <pdhoff@uw.edu>
+Description: This package simulates random orthonormal matrices from linear and quadratic exponential family distributions on the Stiefel manifold. The most general type of distribution covered is the matrix-variate  Bingham-von Mises-Fisher distribution. Most of the simulation methods are presented in Hoff(2009) "Simulation of the Matrix Bingham-von Mises-Fisher Distribution, With Applications to Multivariate and Relational Data."
+License: GPL-3
+Packaged: 2016-12-05 15:11:52 UTC; hornik
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2016-12-05 18:28:48

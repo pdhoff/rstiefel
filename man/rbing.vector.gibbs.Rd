@@ -1,0 +1,49 @@
+\name{rbing.vector.gibbs}
+\alias{rbing.vector.gibbs}
+\title{
+Gibbs Sampling for the Vector-variate Bingham Distribution
+}
+\description{
+Simulate a random normal vector from the Bingham distribution using Gibbs sampling.
+}
+\usage{
+rbing.vector.gibbs(A, x)
+}
+\arguments{
+  \item{A}{
+a symmetric matrix. 
+}
+  \item{x}{
+the current value of the random normal vector. 
+}
+}
+\value{
+a new value of the vector \code{x} obtained by Gibbs sampling.
+}
+\note{This provides one Gibbs scan. The function should be used iteratively.}
+\references{
+Hoff(2009)
+}
+\author{
+Peter Hoff
+}
+\examples{
+## The function is currently defined as
+rbing.vector.gibbs <-
+function(A,x)
+{
+  #simulate from the vector bmf distribution as described in Hoff(2009) 
+  #this is one Gibbs step, and must be used iteratively
+  evdA<-eigen(A,symmetric=TRUE)
+  E<-evdA$vec
+  l<-evdA$val
+
+  y<-t(E)%*%x
+  x<-E%*%ry_bing(y,l)
+  x/sqrt(sum(x^2))
+  #One improvement might be a rejection sampler 
+  #based on a mixture of vector mf distributions. 
+  #The difficulty is finding the max of the ratio.
+}
+
+}

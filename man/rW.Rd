@@ -1,0 +1,34 @@
+\name{rW}
+\alias{rW}
+\title{
+Simulate \code{W} as Described in Wood(1994)
+}
+\description{
+Auxilliary variable simulation for rejection sampling of \code{rmf.vector}, 
+as described in Wood(1994).
+}
+\usage{
+rW(kap, m)
+}
+\arguments{
+  \item{kap}{a positive scalar. 
+}
+  \item{m}{a positive integer. 
+}
+}
+\value{
+a number between zero and one. 
+}
+\author{
+Peter Hoff
+}
+
+\examples{
+rW(pi,4)
+
+## The function is currently defined as
+function (kap, m) 
+{
+    .C("rW", kap = as.double(kap), m = as.integer(m), w = double(1))$w
+  }
+}
