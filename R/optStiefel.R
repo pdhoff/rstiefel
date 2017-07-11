@@ -8,7 +8,7 @@
 #' #' @examples
 #' #' add(1, 1)
 #' #' add(10, 1)
-optStiefel <- function(F, dF, Vinit=NULL, method="bb", metric="canonical",
+optStiefel <- function(F, dF, Vinit=NULL, method="bb",
                        searchParams=NULL,
                        reltol=sqrt(.Machine$double.eps),
                        maxIters=100, verbose=FALSE, 
@@ -226,5 +226,59 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
     }
 
     Ytau
+
+}
+
+#' newton on the Stiefel manifold
+#' #'
+#' #' @param F A function V(P, S) -> R
+#' #' @param dF
+#' #' @param d2F 
+#' #' @param searchParams 
+#' #' @return A stationary point of F on the Stiefel manifold.
+#' #' @examples
+#' #' add(1, 1)
+#' #' add(10, 1)
+newtonStiefel <- function(F, dF, d2F, Vinit=NULL, method="bb",
+                       searchParams=NULL,
+                       reltol=sqrt(.Machine$double.eps),
+                       maxIters=100, verbose=FALSE, 
+                       maxLineSearchIters=100) {
+
+    if(is.null(Vinit)) 
+        V <- rustiefel(P, S)
+    else
+        V <- Vinit
+
+    dFV <- dF(V)
+    G <- dFV - V %*% t(dFV) %*% V
+    V %*% dFV
+
+}
+
+#' newton on the Stiefel manifold
+#' #'
+#' #' @param F A function V(P, S) -> R
+#' #' @param dF
+#' #' @param d2F 
+#' #' @param searchParams 
+#' #' @return A stationary point of F on the Stiefel manifold.
+#' #' @examples
+#' #' add(1, 1)
+#' #' add(10, 1)
+conjugateGradient <- function(F, dF, d2F, Vinit=NULL, method="bb",
+                       searchParams=NULL,
+                       reltol=sqrt(.Machine$double.eps),
+                       maxIters=100, verbose=FALSE, 
+                       maxLineSearchIters=100) {
+
+    if(is.null(Vinit)) 
+        V <- rustiefel(P, S)
+    else
+        V <- Vinit
+
+    dFV <- dF(V)
+    G <- dFV - V %*% t(dFV) %*% V
+    V %*% dFV
 
 }
