@@ -1,24 +1,38 @@
-
-#' Optimize a function on the Stiefel manifold
-#' #'
-#' #' @param F A function V(P, S) -> R
-#' #' @param G The gradient of F
-#' #' @param searchParams 
-#' #' @return A stationary point of F on the Stiefel manifold.
-#' #' @examples
-#' #' add(1, 1)
-#' #' add(10, 1)
-optStiefel <- function(F, dF, Vinit=NULL, method="bb",
+#' @title Optimize a function on the Stiefel manifold
+#' 
+#' @param F A function V(P, S) -> \code{R^1}
+#' @param dF A function to compute the gradient of F
+#' @param Vinit The starting point on the stiefel manifold for the optimization
+#' @param method: "bb" or curvilinear 
+#' @return A stationary point of F on the Stiefel manifold.
+#' @examples
+#' Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
+#' library(rstiefel)
+#' 
+#' N <- 1000
+#' P <- 3
+#' Lam <- diag(c(10, 5, 3, rep(1, N-P)))
+#' U <- rustiefel(N, N)
+#' M <- U %*% Lam %*% t(U)
+#' 
+#' F <- function(V) { - sum(diag(t(V) %*% M %*% V)) }
+#' dF <- function(V) { - 2*M %*% V }
+#' V = optStiefel(F, dF, Vinit=rustiefel(N, P),
+#'                method="curvilinear",
+#'                searchParams=list(rho1=0.1, rho2=0.9, tau=1))
+#'                
+#' print(sprintf("Sum of first %d eigenvalues is %f", P, -F(V)))
+#' 
+#' @export
+optStiefel <- function(F, dF, Vinit, method="bb",
                        searchParams=NULL,
                        reltol=sqrt(.Machine$double.eps),
                        maxIters=100, verbose=FALSE, 
                        maxLineSearchIters=100) {
-    
-    if(is.null(Vinit)) 
-        V <- rustiefel(P, S)
-    else
-        V <- Vinit
 
+    P <- nrow(Vinit)
+    S <- ncol(Vinit)
+    
     if (method == "bb") {
 
         if(is.null(searchParams)) {
@@ -28,11 +42,14 @@ optStiefel <- function(F, dF, Vinit=NULL, method="bb",
             eta <- 0.2
 
         } else {
-            passedParams <- c("rho", "eta", "tau") %in% names(searchParams)
-            if(!all(passsedParams)) {
-                stop(sprintf("For linesearch with BB updates need to specify blah.  Missing %s.",
+            passedParams <- c("rho", "eta") %in% names(searchParams)
+            if(!all(passedParams)) {
+                stop(sprintf("For linesearch with BB updates need to specify rho and eta.  Missing %s.",
                              paste(names(passedParams)[!passedParams], collapse=", ")))
             }
+
+            rho = searchParams$rho
+            eta = searchParams$eta
         }
         
         Ccur <- Qcur <- 1
@@ -46,26 +63,30 @@ optStiefel <- function(F, dF, Vinit=NULL, method="bb",
             rho1 <- 0.1
             rho2 <- 0.9
             tau <- 1
-            
+
         } else {
             passedParams <- c("rho1", "rho2", "tau") %in% names(searchParams)
-            if(!all(passsedParams)) {
+            if(!all(passedParams)) {
                 stop(sprintf("Curvilinear linesearch requires specification of rho1, rho2 and initial stepsize tau.  Missing %s.",
                              paste(names(passedParams)[!passedParams], collapse = ", ")))
             }
 
+            rho1 = searchParams$rho1
+            rho2 = searchParams$rho2
+            tau = searchParams$tau
         }
 
         
     }
 
+    V <- Vinit
     Fcur <- F(V)
     Fprev <- Inf
     Gcur <- Gprev <- dF(V)
     iter <- 1
-
+    
     while((Fprev - Fcur) > reltol * (abs(Fcur) + reltol) & iter < maxIters) {
-
+        
         Fprev <- Fcur
         if ( method == "bb") {
 
@@ -93,7 +114,7 @@ optStiefel <- function(F, dF, Vinit=NULL, method="bb",
         if(verbose) {
             print(sprintf("Iteration %i: %f", iter, Fcur))
         }
-        
+
         iter <- iter + 1
     }
 
@@ -102,16 +123,13 @@ optStiefel <- function(F, dF, Vinit=NULL, method="bb",
 
 
 #' A curvilinear search on the Stiefel manifold (Wen and Yin 2013, Algo 1)
-#' #'
-#' #' @param X an n x p semi-orthogonal matrix (starting point)
-#' #' @param F A function V(n, p) -> R
-#' #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
-#' #' @return A semi-orthogonal matrix Ytau which satisfies 
-#' #' @examples
-#' #' TODO
-#' #' TODO
-
-
+#' 
+#' @param X an n x p semi-orthogonal matrix (starting point)
+#' @param F A function V(n, p) -> \code{R^1}
+#' @param G_x an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}
+#' @return A semi-orthogonal matrix, Ytau, which satisfies Armijo-Wolfe conditions
+#'  
+#' @export
 lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
 
     n <- nrow(X)
@@ -119,7 +137,7 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
     
     reached <- FALSE
     tau <- tauStart
-
+    
     A <- G_x %*% t(X) - X %*% t(G_x)
     U <- cbind(G_x, X)
     V <- cbind(X, -1*G_x)
@@ -130,23 +148,16 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
         tau <- tau/2
     }
     H <- solve(diag(2*p) + tau/2*t(V) %*% U)
-
+    
     Ytau <- X - tau * U %*% (H %*% t(V) %*% X)
     FprimeY0 <- tr( t(G_x) %*% -A %*% X )
     B <- diag(n) - tau/2*U %*% H %*% t(V)
     FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau) / 2 )
 
     ## Check Armijo-Wolfe conditions
-    minVal <- F(X)
-    minTau <- 1e-16
     iter <- 0
 
     while(F(Ytau) > (F(X) + rho1*tau*FprimeY0) | FprimeYtau < rho2*FprimeY0) {
-
-        if(F(Ytau) < minVal) {
-            minVal <- F(Ytau)
-            minTau <- tau
-        }
 
         if(iter > maxIters) {
             print("Reached maximum iterations in line search.")
@@ -162,22 +173,21 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
         B <- diag(n) - tau/2*U %*% HV
         FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau)/2 )
         iter <- iter + 1
+
     }
 
     Ytau 
 }
 
 #' A curvilinear search on the Stiefel manifold with BB steps (Wen and Yin 2013, Algo 2)
-#' #' Based on the line search algorithm described in (Zhang and Hager, 2004)
-#' #'
-#' #' @param X an n x p semi-orthogonal matrix
-#' #' @param F A function V(n, p) -> R
-#' #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
-#' #' @return A semi-orthogonal matrix Ytau which satisfies 
-#' #' @examples
-#' #' TODO
-#' #' TODO
-
+#' This is based on the line search algorithm described in (Zhang and Hager, 2004)
+#' 
+#' @param X an n x p semi-orthogonal matrix
+#' @param F A function V(n, p) -> R
+#' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
+#' @return A semi-orthogonal matrix Ytau which satisfies convergence criter (Eqn 29 in Wen & Yin '13)
+#' 
+#' @export
 lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
     n <- nrow(X)
@@ -229,56 +239,7 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
 }
 
-#' newton on the Stiefel manifold
-#' #'
-#' #' @param F A function V(P, S) -> R
-#' #' @param dF
-#' #' @param d2F 
-#' #' @param searchParams 
-#' #' @return A stationary point of F on the Stiefel manifold.
-#' #' @examples
-#' #' add(1, 1)
-#' #' add(10, 1)
-newtonStiefel <- function(F, dF, d2F, Vinit=NULL, method="bb",
-                       searchParams=NULL,
-                       reltol=sqrt(.Machine$double.eps),
-                       maxIters=100, verbose=FALSE, 
-                       maxLineSearchIters=100) {
+#' Compute the trace of a matrix
+#' @export
+tr <- function(X) { sum(diag(X)) }
 
-    if(is.null(Vinit)) 
-        V <- rustiefel(P, S)
-    else
-        V <- Vinit
-
-    dFV <- dF(V)
-    G <- dFV - V %*% t(dFV) %*% V
-    V %*% dFV
-
-}
-
-#' newton on the Stiefel manifold
-#' #'
-#' #' @param F A function V(P, S) -> R
-#' #' @param dF
-#' #' @param d2F 
-#' #' @param searchParams 
-#' #' @return A stationary point of F on the Stiefel manifold.
-#' #' @examples
-#' #' add(1, 1)
-#' #' add(10, 1)
-conjugateGradient <- function(F, dF, d2F, Vinit=NULL, method="bb",
-                       searchParams=NULL,
-                       reltol=sqrt(.Machine$double.eps),
-                       maxIters=100, verbose=FALSE, 
-                       maxLineSearchIters=100) {
-
-    if(is.null(Vinit)) 
-        V <- rustiefel(P, S)
-    else
-        V <- Vinit
-
-    dFV <- dF(V)
-    G <- dFV - V %*% t(dFV) %*% V
-    V %*% dFV
-
-}
