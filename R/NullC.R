@@ -1,3 +1,13 @@
+#' Given a matrix M, find a matrix N giving a basis for the null space. This is a modified version of Null from the package MASS.
+#'
+#' @param M 
+#'
+#' @return An orthonormal matrix N such that t(N) %*% M is a matrix of zeros.
+#' @export
+#' @note 
+#' The MASS function Null(matrix(0,4,2)) returns a 4*2 matrix, whereas NullC(matrix(0,4,2)) returns diag(4).
+#' @examples
+#' NullC(matrix(0,4,2))
 NullC <-
 function(M)
 {

@@ -5,6 +5,7 @@
 #' @param Vinit The starting point on the stiefel manifold for the optimization
 #' @param method: "bb" or curvilinear 
 #' @return A stationary point of F on the Stiefel manifold.
+#' @references (Wen and Yin, 2013)
 #' @examples
 #' Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
 #' library(rstiefel)
@@ -129,6 +130,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' @param G_x an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}
 #' @return A semi-orthogonal matrix, Ytau, which satisfies Armijo-Wolfe conditions
 #'  
+#' @references (Wen and Yin, 2013)
 #' @export
 lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
 
@@ -186,7 +188,7 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
 #' @param F A function V(n, p) -> R
 #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
 #' @return A semi-orthogonal matrix Ytau which satisfies convergence criter (Eqn 29 in Wen & Yin '13)
-#' 
+#' @references (Wen and Yin, 2013) and (Zhang and Hager, 2004)
 #' @export
 lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
