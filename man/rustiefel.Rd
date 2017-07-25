@@ -11,6 +11,9 @@ rustiefel(m, R)
 
 \item{R}{The number of column vectors.}
 }
+\value{
+An \cod{m x R}  uniformly distributed random semi-orthogonal matrix
+}
 \description{
 Simulate uniformly from \deqn{V_{R, m}}
 See Chikuse(1994)

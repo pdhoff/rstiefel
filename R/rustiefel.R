@@ -5,7 +5,7 @@
 #' @param m The length of each column vector. 
 #' @param R The number of column vectors. 
 #'
-#' @return
+#' @return An \cod{m x R}  uniformly distributed random semi-orthogonal matrix
 #' @export
 #'
 #' @examples

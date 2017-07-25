@@ -1,7 +1,7 @@
 #' @title Optimize a function on the Stiefel manifold
 #' 
 #' @param F A function V(P, S) -> \code{R^1}
-#' @param dF A function to compute the gradient of F
+#' @param dF A function to compute the gradient of F.  Returns a \code{P \times S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij
 #' @param Vinit The starting point on the stiefel manifold for the optimization
 #' @param method: "bb" or curvilinear 
 #' @return A stationary point of F on the Stiefel manifold.
