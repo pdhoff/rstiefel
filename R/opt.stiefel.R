@@ -1,13 +1,13 @@
 #' @title Optimize a function on the Stiefel manifold
 #' 
 #' @param F A function V(P, S) -> \code{R^1}
-#' @param dF A function to compute the gradient of F.  Returns a \code{P \times S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij
+#' @param dF A function to compute the gradient of F.  Returns a \code{P x S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij}
 #' @param Vinit The starting point on the stiefel manifold for the optimization
 #' @param method: "bb" or curvilinear 
 #' @return A stationary point of F on the Stiefel manifold.
 #' @references (Wen and Yin, 2013)
 #' @examples
-#' Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
+#' ## Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
 #' library(rstiefel)
 #' 
 #' N <- 1000
@@ -241,7 +241,7 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
 }
 
-#' Compute the trace of a matrix
+#' @title Compute the trace of a matrix
 #' @export
 tr <- function(X) { sum(diag(X)) }
 

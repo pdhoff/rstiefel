@@ -6,6 +6,3 @@
 \usage{
 tr(X)
 }
-\description{
-Compute the trace of a matrix
-}
