@@ -172,7 +172,6 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
         HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
 
         Ytau <- X - tau * U %*% (HV %*% X)
-        FprimeY0 <- tr( t(G_x) %*% -A %*% X )
         B <- diag(n) - tau/2*U %*% HV
         FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau)/2 )
         iter <- iter + 1
