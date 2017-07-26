@@ -55,7 +55,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
         
         Qcur <- 1
         Ccur <- F(Vinit)
-        Vprev <- Vinit
+        Vprev <- rustiefel(P, S)
 
     } else if (method == "curvilinear") {
 
