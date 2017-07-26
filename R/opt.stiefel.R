@@ -53,8 +53,9 @@ optStiefel <- function(F, dF, Vinit, method="bb",
             eta = searchParams$eta
         }
         
-        Ccur <- Qcur <- 1
-        Vprev <- rustiefel(P, S)
+        Qcur <- 1
+        Ccur <- F(Vinit)
+        Vprev <- Vinit
 
     } else if (method == "curvilinear") {
 
@@ -218,7 +219,7 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
     iter <- 1
 
     while(F(Ytau) > C + rho*tau*FprimeY0) {
-
+        
         tau <- tau/2
 
         if(iter > maxIters) {
