@@ -27,7 +27,7 @@
 #' @export
 optStiefel <- function(F, dF, Vinit, method="bb",
                        searchParams=NULL,
-                       reltol=sqrt(.Machine$double.eps),
+                       tol=1e-5,
                        maxIters=100, verbose=FALSE, 
                        maxLineSearchIters=100) {
 
@@ -78,6 +78,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
             tau = searchParams$tau
         }
 
+
         
     }
 
@@ -86,8 +87,10 @@ optStiefel <- function(F, dF, Vinit, method="bb",
     Fprev <- Inf
     Gcur <- Gprev <- dF(V)
     iter <- 1
-    
-    while((Fprev - Fcur) > reltol * (abs(Fcur) + reltol) & iter < maxIters) {
+    Fprime <- Inf
+
+    ## While ||gradF(V)|| > eps
+    while(abs(Fprime) > tol & iter < maxIters) {
         
         Fprev <- Fcur
         if ( method == "bb") {
@@ -103,10 +106,11 @@ optStiefel <- function(F, dF, Vinit, method="bb",
             Qprev <- Qcur
             Qcur <- eta*Qcur + 1
             Ccur <- (eta*Qprev*Ccur + Fcur) / Qcur
+            Gcur <- dF(V)
             
         } else if ( method == "curvilinear" ) { 
 
-            V <- lineSearch(F, V, Gcur, rho1, rho2, tau, maxIters=maxLineSearchIters)
+            V <- lineSearch(F, dF, V, rho1, rho2, tau, maxIters=maxLineSearchIters)
 
             Fcur <- F(V)
             Gprev <- Gcur
@@ -114,9 +118,13 @@ optStiefel <- function(F, dF, Vinit, method="bb",
         }
 
         if(verbose) {
-            print(sprintf("Iteration %i: %f", iter, Fcur))
+            print(sprintf("Iteration %i: F = %f, dF = %f", iter, Fcur, Fprime))
         }
 
+        ## compute ||gradF(V)||
+        A <- Gcur %*% t(V) - V %*% t(Gcur)
+        Fprime <- tr( t(Gcur) %*% -A %*% V )
+        
         iter <- iter + 1
     }
 
@@ -133,8 +141,10 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #'  
 #' @references (Wen and Yin, 2013)
 #' @export
-lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
+lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 
+    G_x <- dF(X)
+    
     n <- nrow(X)
     p <- ncol(X)
     
@@ -150,31 +160,52 @@ lineSearch <- function(F, X, G_x, rho1, rho2, tauStart, maxIters=100) {
     while(kappa(diag(2*p) + tau/2*t(V) %*% U) > 1e12 ) {
         tau <- tau/2
     }
-    H <- solve(diag(2*p) + tau/2*t(V) %*% U)
+
+    HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
     
-    Ytau <- X - tau * U %*% (H %*% t(V) %*% X)
+    Ytau <- X - tau * U %*% (HV %*% X)
     FprimeY0 <- tr( t(G_x) %*% -A %*% X )
-    B <- diag(n) - tau/2*U %*% H %*% t(V)
-    FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau) / 2 )
+
+    B <- diag(n) - tau/2*U %*% HV
+    FprimeYtau <- tr( t(dF(Ytau)) %*% -B %*% A %*% (X + Ytau) / 2 )
 
     ## Check Armijo-Wolfe conditions
     iter <- 0
 
-    while(F(Ytau) > (F(X) + rho1*tau*FprimeY0) | FprimeYtau < rho2*FprimeY0) {
+    lower <- 0
+    upper <- Inf
+    
+    Armijo <- F(Ytau) > (F(X) + rho1*tau*FprimeY0)
+    Wolfe <- FprimeYtau < rho2*FprimeY0
+
+    while(Armijo | Wolfe) {
 
         if(iter > maxIters) {
             print("Reached maximum iterations in line search.")
             break
         }
 
-        tau <- tau/2
+        if(Armijo) {
+            upper <- tau
+            tau <- (lower + upper) / 2
+        } else if(Wolfe) {
+            lower <- tau
+            if(upper == Inf)
+                tau <- 2 * lower
+            else
+                tau <- (lower + upper) / 2
+        }
 
         HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
-
         Ytau <- X - tau * U %*% (HV %*% X)
-        B <- diag(n) - tau/2*U %*% HV
-        FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau)/2 )
+        ## B <- diag(n) - tau/2*U %*% HV
+        B <- solve(diag(n) + tau/2 * A)
+        FprimeYtau <- tr( t(dF(Ytau)) %*% -B %*% A %*% (X + Ytau) / 2 )
+        
+        Armijo <- F(Ytau) > (F(X) + rho1*tau*FprimeY0)
+        Wolfe <- FprimeYtau < rho2*FprimeY0
         iter <- iter + 1
+        ## print(F(X))
 
     }
 
@@ -230,8 +261,6 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
         Ytau <- X - tau * U %*% (HV %*% X)
         FprimeY0 <- sum(diag(t(G_x) %*% -A %*% X))
-        B <- diag(n) - tau/2*U %*% HV
-        FprimeYtau <- tr( t(G_x) %*% -B %*% A %*% (X + Ytau)/2 )
 
         iter <- iter + 1
 
