@@ -95,10 +95,10 @@ optStiefel <- function(F, dF, Vinit, method="bb",
         Fprev <- Fcur
         if ( method == "bb") {
 
-            newV <- lineSearchBB(F, V, Vprev, Gcur, Gprev, rho, Ccur, maxIters=maxLineSearchIters)
+            res <- lineSearchBB(F, V, Vprev, Gcur, Gprev, rho, Ccur, maxIters=maxLineSearchIters)
 
             Vprev <- V
-            V <- newV
+            V <- res$Y
             Fcur <- F(V)
             Gprev <- Gcur
             Gcur <- dF(V)
@@ -110,7 +110,9 @@ optStiefel <- function(F, dF, Vinit, method="bb",
             
         } else if ( method == "curvilinear" ) { 
 
-            V <- lineSearch(F, dF, V, rho1, rho2, tau, maxIters=maxLineSearchIters)
+            res <- lineSearch(F, dF, V, rho1, rho2, tau, maxIters=maxLineSearchIters)
+            V <- res$Y
+            tau <- res$tau
 
             Fcur <- F(V)
             Gprev <- Gcur
@@ -137,7 +139,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' @param X an n x p semi-orthogonal matrix (starting point)
 #' @param F A function V(n, p) -> \code{R^1}
 #' @param G_x an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}
-#' @return A semi-orthogonal matrix, Ytau, which satisfies Armijo-Wolfe conditions
+#' @return A list containing: Y, the semi-orthogonal matrix satisfying the Armijo-Wolfe conditions and tau: the stepsize satisfying these conditions
 #'  
 #' @references (Wen and Yin, 2013)
 #' @export
@@ -209,7 +211,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 
     }
 
-    Ytau 
+    list(Y=Ytau, tau=tau)
 }
 
 #' A curvilinear search on the Stiefel manifold with BB steps (Wen and Yin 2013, Algo 2)
@@ -218,7 +220,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 #' @param X an n x p semi-orthogonal matrix
 #' @param F A function V(n, p) -> R
 #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
-#' @return A semi-orthogonal matrix Ytau which satisfies convergence criter (Eqn 29 in Wen & Yin '13)
+#' @return A list containing Y: a semi-orthogonal matrix Ytau which satisfies convergence criteria (Eqn 29 in Wen & Yin '13), and tau: the stepsize satisfying these criteria
 #' @references (Wen and Yin, 2013) and (Zhang and Hager, 2004)
 #' @export
 lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
@@ -266,7 +268,7 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 
     }
 
-    Ytau
+    list(Y=Ytau, tau=tau)
 
 }
 
