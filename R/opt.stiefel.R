@@ -8,7 +8,6 @@
 #' @references (Wen and Yin, 2013)
 #' @examples
 #' ## Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
-#' library(rstiefel)
 #' 
 #' N <- 1000
 #' P <- 3
@@ -140,7 +139,17 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' @param F A function V(n, p) -> \code{R^1}
 #' @param G_x an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}
 #' @return A list containing: Y, the semi-orthogonal matrix satisfying the Armijo-Wolfe conditions and tau: the stepsize satisfying these conditions
-#'  
+#'
+#' @examples
+#' N <- 10
+#' P <- 2
+#' M <- diag(10:1)
+#' F <- function(V) { - sum(diag(t(V) %*% M %*% V)) }
+#' dF <- function(V) { - 2*M %*% V }
+#' X <- rustiefel(N, P)
+#' res <- lineSearch(F, dF, X, rho1=0.1, rho2=0.9, tauStart=1)
+#' 
+#' 
 #' @references (Wen and Yin, 2013)
 #' @export
 lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
@@ -221,6 +230,19 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 #' @param F A function V(n, p) -> R
 #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
 #' @return A list containing Y: a semi-orthogonal matrix Ytau which satisfies convergence criteria (Eqn 29 in Wen & Yin '13), and tau: the stepsize satisfying these criteria
+#'
+#' @examples
+#' N <- 10
+#' P <- 2
+#' M <- diag(10:1)
+#' F <- function(V) { - sum(diag(t(V) %*% M %*% V)) }
+#' dF <- function(V) { - 2*M %*% V }
+#' Xprev <- rustiefel(N, P)
+#' G_xprev <- dF(Xprev)
+#' X <- rustiefel(N, P)
+#' Xprev <- dF(X)
+#' res <- lineSearchBB(F, X, Xprev, G_x, G_xprev, rho=0.1, C=F(X))
+#' 
 #' @references (Wen and Yin, 2013) and (Zhang and Hager, 2004)
 #' @export
 lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
