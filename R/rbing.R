@@ -1,6 +1,7 @@
 #' Gibbs Sampling for the Matrix-variate Bingham Distribution
 #'
 #'Simulate a random orthonormal matrix from the Bingham distribution using Gibbs sampling.
+#' @useDynLib rstiefel
 #' @param A A symmetric matrix 
 #' @param B A diagonal matrix with decreasing entries
 #' @param X The current value of the random orthonormal Matrix
@@ -9,7 +10,15 @@
 #' @export
 #'
 #' @examples
-rbing.matrix.gibbs <- function(A,B,X) {
+#' N <- 5; P <- 2
+#' X <- rustiefel(N, P)
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' B <- diag(5:1)
+#' for(i in 1:100) {
+#'    x <- rbing.matrix.gibbs(diag(N:1), diag(N:1), X)
+#' }
+rbing.matrix.gibbs <- function(A, B, X) {
     
     #simulate from the matrix bmf distribution as described in Hoff(2009) 
     #this is one Gibbs step, and must be used iteratively
@@ -57,6 +66,13 @@ rbing.matrix.gibbs <- function(A,B,X) {
 #' @export
 #'
 #' @examples
+#' N <- 5
+#' x <- rustiefel(N, 1)
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' for(i in 1:100) {
+#'    X <- rbing.vector.gibbs(A, x)
+#' }
 rbing.vector.gibbs <- function(A, x) {
     #simulate from the vector bmf distribution as described in Hoff(2009) 
     #this is one Gibbs step, and must be used iteratively
@@ -86,6 +102,11 @@ rbing.vector.gibbs <- function(A, x) {
 #' 
 #'
 #' @examples
+#' N <- 2;
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' B <- diag(N:1)
+#' X <- rbing.O2(A, B)
 rbing.O2 <- function(A, B, a=NULL, E=NULL) {
     
     ### assumes B is a diagonal matrix with *decreasing* entries 
@@ -127,6 +148,11 @@ rbing.O2 <- function(A, B, a=NULL, E=NULL) {
 #' @export
 #'
 #' @examples
+#' N <- 5;
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' B <- diag(N:1)
+#' X <- rbing.Op(A, B)
 rbing.Op <- function(A, B) {
     
     ### assumes B is a diagonal matrix with *decreasing* entries 
@@ -170,9 +196,6 @@ rbing.Op <- function(A, B) {
 #' @param l A vector
 #'
 #' @return A normal vector
-#' @export
-#'
-#' @examples
 ry_bing <- function(y, l) {
     .C("ry_bing",y=as.double(y),l=as.double(l),n=as.integer(length(y)))$y
 }
