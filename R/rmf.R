@@ -108,6 +108,9 @@ rmf.matrix.gibbs <- function(M, X, rscol=NULL) {
 #'
 #' @references Wood(1994), Hoff(2009)
 #' @examples
+#' N <- 100
+#' kmu <- rustiefel(N, 1)
+#' rmf.vector(kmu)
 rmf.vector <- function(kmu) {
   
     #simulate from the vector mf distribution as described in Wood(1994)
@@ -133,7 +136,7 @@ rmf.vector <- function(kmu) {
 #' as described in Wood(1994).
 #' @param kap A positive scalar.
 #' @param m A positive integer.
-#'
+#' 
 #' @return A number between zero and one. 
 #' @export
 #'

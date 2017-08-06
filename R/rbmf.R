@@ -10,6 +10,14 @@
 #' @export
 #'
 #' @examples
+#' N <- 5;
+#' x <- rustiefel(N, 1)
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' c <- rustiefel(N, 1)
+#' for(i in 1:100) {
+#'    x <- rbmf.vector.gibbs(A, c, x)
+#' }
 rbmf.vector.gibbs <- function(A, c, x) {
     
 
@@ -39,6 +47,15 @@ rbmf.vector.gibbs <- function(A, c, x) {
 #' WARNING: - do not start X at the eigenvectors of A: The relative weights on A then can become infinity. 
 #'
 #' @examples
+#' N <- 5; P <- 2;
+#' X <- rustiefel(N, P)
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' B <- diag(N:1)
+#' C <- rustiefel(N, P)
+#' for(i in 1:100) {
+#'  X <- rbmf.matrix.gibbs(A, B, C, X)
+#' }
 rbmf.matrix.gibbs <- function(A, B, C, X) {
 
     m <- dim(X)[1];  R <- dim(X)[2]
@@ -78,6 +95,15 @@ rbmf.matrix.gibbs <- function(A, B, C, X) {
 #' @export
 #'
 #' @examples
+#' N <- 2; P <- 2;
+#' X <- rustiefel(N, P)
+#' U <- rustiefel(N, N)
+#' A <- U %*% t(U)
+#' B <- diag(N:1)
+#' C <- rustiefel(N, P)
+#' for(i in 1:100) {
+#'  X <- rbmf.O2(A, B, C, X)
+#' }
 rbmf.O2 <- function(A, B, C, env=FALSE) {
 
     sC<-svd(C)
@@ -119,9 +145,6 @@ rbmf.O2 <- function(A, B, C, env=FALSE) {
 #' @param d A vector 
 #'
 #' @return A normal vector
-#' @export
-#'
-#' @examples
 ry_bmf <- function(y, l, d) {
   
     .C("ry_bmf",y=as.double(y), l=as.double(l), d=as.double(d),

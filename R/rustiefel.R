@@ -10,6 +10,7 @@
 #' @export
 #'
 #' @examples
+#' rustiefel(10, 2)
 rustiefel <- function(m, R) {
   
   # note R is given second, the result is an m * R matrix
