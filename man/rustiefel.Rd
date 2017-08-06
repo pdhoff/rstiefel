@@ -17,3 +17,6 @@ rustiefel(m, R)
 \value{
 An \code{m x R}  uniformly distributed random semi-orthogonal matrix
 }
+\examples{
+rustiefel(10, 2)
+}

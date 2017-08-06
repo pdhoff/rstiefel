@@ -21,3 +21,10 @@ A random 2x2 orthogonal matrix simulated from the Bingham distribution.
 \description{
 Simulate a 2 x 2 random orthogonal matrix from the Bingham distribution using a rejection sampler.
 }
+\examples{
+N <- 2;
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+B <- diag(N:1)
+X <- rbing.O2(A, B)
+}

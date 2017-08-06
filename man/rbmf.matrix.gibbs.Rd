@@ -27,3 +27,14 @@ Simulate from the matrix bmf distribution as described in Hoff(2009).
 This provides one Gibbs scan. The function should be used iteratively.    
 WARNING: - do not start X at the eigenvectors of A: The relative weights on A then can become infinity.
 }
+\examples{
+N <- 5; P <- 2;
+X <- rustiefel(N, P)
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+B <- diag(N:1)
+C <- rustiefel(N, P)
+for(i in 1:100) {
+ X <- rbmf.matrix.gibbs(A, B, C, X)
+}
+}

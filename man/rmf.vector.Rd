@@ -15,6 +15,11 @@ A vector.
 \description{
 Simulate a Random Normal Vector
 }
+\examples{
+N <- 100
+kmu <- rustiefel(N, 1)
+rmf.vector(kmu)
+}
 \references{
 Wood(1994), Hoff(2009)
 }

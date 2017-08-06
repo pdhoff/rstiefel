@@ -19,3 +19,13 @@ A new value the matrix X obtained by Gibbs sampling
 \description{
 Simulate a random orthonormal matrix from the Bingham distribution using Gibbs sampling.
 }
+\examples{
+N <- 5; P <- 2
+X <- rustiefel(N, P)
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+B <- diag(5:1)
+for(i in 1:100) {
+   x <- rbing.matrix.gibbs(diag(N:1), diag(N:1), X)
+}
+}

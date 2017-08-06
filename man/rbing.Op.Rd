@@ -18,3 +18,10 @@ A random \code{p x p} orthogonal matrix U simulated from the Bingham distributio
 Simulate a \code{p x p} random orthogonal matrix from the Bingham distribution on O(p) having density proportional to \deqn{etr(BU^TAU)} using the rejection sampler described in Hoff(2009)
 This is a rejection sampler and only works for small matrices, otherwise the sampler will reject too frequently
 }
+\examples{
+N <- 5;
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+B <- diag(N:1)
+X <- rbing.Op(A, B)
+}

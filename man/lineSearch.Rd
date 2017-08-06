@@ -4,7 +4,7 @@
 \alias{lineSearch}
 \title{A curvilinear search on the Stiefel manifold (Wen and Yin 2013, Algo 1)}
 \usage{
-lineSearch(F, X, G_x, rho1, rho2, tauStart, maxIters = 100)
+lineSearch(F, dF, X, rho1, rho2, tauStart, maxIters = 100)
 }
 \arguments{
 \item{F}{A function V(n, p) -> \code{R^1}}
@@ -14,10 +14,21 @@ lineSearch(F, X, G_x, rho1, rho2, tauStart, maxIters = 100)
 \item{G_x}{an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}}
 }
 \value{
-A semi-orthogonal matrix, Ytau, which satisfies Armijo-Wolfe conditions
+A list containing: Y, the semi-orthogonal matrix satisfying the Armijo-Wolfe conditions and tau: the stepsize satisfying these conditions
 }
 \description{
 A curvilinear search on the Stiefel manifold (Wen and Yin 2013, Algo 1)
+}
+\examples{
+N <- 10
+P <- 2
+M <- diag(10:1)
+F <- function(V) { - sum(diag(t(V) \%*\% M \%*\% V)) }
+dF <- function(V) { - 2*M \%*\% V }
+X <- rustiefel(N, P)
+res <- lineSearch(F, dF, X, rho1=0.1, rho2=0.9, tauStart=1)
+
+
 }
 \references{
 (Wen and Yin, 2013)

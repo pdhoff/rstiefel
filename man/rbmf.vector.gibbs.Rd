@@ -22,3 +22,13 @@ Simulate a random normal vector from the Bingham-von Mises-Fisher distribution u
 \note{
 This is one Gibbs step, and must be used iteratively.
 }
+\examples{
+N <- 5;
+x <- rustiefel(N, 1)
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+c <- rustiefel(N, 1)
+for(i in 1:100) {
+   x <- rbmf.vector.gibbs(A, c, x)
+}
+}

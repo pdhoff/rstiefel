@@ -21,3 +21,14 @@ A random \code{2 x 2} orthogonal matrix simulated from the Bingham-von Mises-Fis
 \description{
 Simulate a \code{2 x 2} Orthogonal Random Matrix
 }
+\examples{
+N <- 2; P <- 2;
+X <- rustiefel(N, P)
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+B <- diag(N:1)
+C <- rustiefel(N, P)
+for(i in 1:100) {
+ X <- rbmf.O2(A, B, C, X)
+}
+}

@@ -4,14 +4,13 @@
 \alias{optStiefel}
 \title{Optimize a function on the Stiefel manifold}
 \usage{
-optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL,
-  reltol = sqrt(.Machine$double.eps), maxIters = 100, verbose = FALSE,
-  maxLineSearchIters = 100)
+optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-05,
+  maxIters = 100, verbose = FALSE, maxLineSearchIters = 100)
 }
 \arguments{
 \item{F}{A function V(P, S) -> \code{R^1}}
 
-\item{dF}{A function to compute the gradient of F.  Returns a \code{P \times S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij}}
+\item{dF}{A function to compute the gradient of F.  Returns a \code{P x S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij}}
 
 \item{Vinit}{The starting point on the stiefel manifold for the optimization}
 
@@ -22,7 +21,6 @@ A stationary point of F on the Stiefel manifold.
 }
 \examples{
 ## Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
-library(rstiefel)
 
 N <- 1000
 P <- 3

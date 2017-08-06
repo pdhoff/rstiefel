@@ -20,3 +20,12 @@ Simulate a random normal vector from the Bingham distribution using Gibbs sampli
 \note{
 This provides one Gibbs scan. The function should be used iteratively.
 }
+\examples{
+N <- 5
+x <- rustiefel(N, 1)
+U <- rustiefel(N, N)
+A <- U \%*\% t(U)
+for(i in 1:100) {
+   X <- rbing.vector.gibbs(A, x)
+}
+}
