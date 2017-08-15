@@ -1,10 +1,8 @@
 #' Simulate a Random Orthonormal Matrix
 #'
 #' Simulate a random orthonormal matrix from the von Mises-Fisher distribution. 
-#' @param M 
+#' @param M A matrix parameterizing the von Mises-Fisher, e.g. p(X) ~ etr(M^TX)
 #'
-#' @return A matrix
-#' 
 #' @return An orthonormal matrix of the same dimension as \code{M}. 
 #' @export
 #'

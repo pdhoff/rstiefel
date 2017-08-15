@@ -136,8 +136,13 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' A curvilinear search on the Stiefel manifold (Wen and Yin 2013, Algo 1)
 #' 
 #' @param X an n x p semi-orthogonal matrix (starting point)
+#' @param dF A function V(n, p) -> \code{R^1}
 #' @param F A function V(n, p) -> \code{R^1}
-#' @param G_x an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}
+#' @param rho1 Parameter for Armijo condition.  Between 0 and 1 and usually small, e.g < 0.1
+#' @param rho2 Parameter for Wolfe condition Between 0 and 1 usually large, > 0.9
+#' @param tauStart Initial step size
+#' @param maxIters Maximum number of iterations
+#' 
 #' @return A list containing: Y, the semi-orthogonal matrix satisfying the Armijo-Wolfe conditions and tau: the stepsize satisfying these conditions
 #'
 #' @examples
@@ -225,10 +230,15 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 
 #' A curvilinear search on the Stiefel manifold with BB steps (Wen and Yin 2013, Algo 2)
 #' This is based on the line search algorithm described in (Zhang and Hager, 2004)
-#' 
-#' @param X an n x p semi-orthogonal matrix
 #' @param F A function V(n, p) -> R
+#' @param X an n x p semi-orthogonal matrix (the current )
+#' @param Xprev an n x p semi-orthogonal matrix (the previous)
 #' @param G_x an n x p matrix with (G_x)_ij = dF(X)/dX_ij
+#' @param G_xprev an n x p matrix with (G_xprev)_ij = dF(X_prev)/dX_prev_ij
+#' @param rho Convergence parameter, usually small (e.g. 0.1)
+#' @param C C_t+1 = (etaQ_t + F(X_t+1))/Q_t+1 See section 3.2 in Wen and Yin, 2013
+#' @param maxIters Maximum number of iterations
+#' 
 #' @return A list containing Y: a semi-orthogonal matrix Ytau which satisfies convergence criteria (Eqn 29 in Wen & Yin '13), and tau: the stepsize satisfying these criteria
 #'
 #' @examples
@@ -240,6 +250,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 #' Xprev <- rustiefel(N, P)
 #' G_xprev <- dF(Xprev)
 #' X <- rustiefel(N, P)
+#' G_x <- dF(X)
 #' Xprev <- dF(X)
 #' res <- lineSearchBB(F, X, Xprev, G_x, G_xprev, rho=0.1, C=F(X))
 #' 

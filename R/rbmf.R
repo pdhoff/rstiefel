@@ -89,7 +89,7 @@ rbmf.matrix.gibbs <- function(A, B, C, X) {
 #' @param A A symmetric matrix.
 #' @param B A diagonal matrix with decreasing entries.
 #' @param C A \code{2 x 2} matrix.
-#' @param env 
+#' @param env A boolean indicating whether to use a bingham envelop rejection sampler
 #'
 #' @return A random \code{2 x 2} orthogonal matrix simulated from the Bingham-von Mises-Fisher distribution.
 #' @export
