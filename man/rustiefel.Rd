@@ -2,10 +2,7 @@
 % Please edit documentation in R/rustiefel.R
 \name{rustiefel}
 \alias{rustiefel}
-\title{Simulate a Uniformly Distributed Random Orthonormal Matrix
-
-Simulate uniformly from \deqn{V(R, m)}
-See Chikuse(1994)}
+\title{Simulate a Uniformly Distributed Random Orthonormal Matrix}
 \usage{
 rustiefel(m, R)
 }
@@ -16,6 +13,9 @@ rustiefel(m, R)
 }
 \value{
 An \code{m x R}  uniformly distributed random semi-orthogonal matrix
+}
+\description{
+Simulate uniformly from \deqn{V(R, m)} (See Chikuse, 1994).
 }
 \examples{
 rustiefel(10, 2)

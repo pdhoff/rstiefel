@@ -5,7 +5,7 @@
 \title{Optimize a function on the Stiefel manifold}
 \usage{
 optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-05,
-  maxIters = 100, verbose = FALSE, maxLineSearchIters = 100)
+  maxIters = 100, verbose = FALSE, maxLineSearchIters = 20)
 }
 \arguments{
 \item{F}{A function V(P, S) -> \code{R^1}}
@@ -14,10 +14,23 @@ optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-05,
 
 \item{Vinit}{The starting point on the stiefel manifold for the optimization}
 
-\item{method:}{"bb" or curvilinear}
+\item{method}{Line search type: "bb" or curvilinear}
+
+\item{searchParams}{List of parameters for the line search algorithm.  If the line search algorithm is the standard curvilinear search than the search parameters are rho1 and rho2.  If the line search algorithm is "bb" then the parameters are rho and eta.}
+
+\item{tol}{Convergence tolerance.  Optimization stops when Fprime < abs(tol), an approximate stationary point.}
+
+\item{maxIters}{Maximum iterations for each gradient step}
+
+\item{verbose}{Boolean indicating whether to print function value and iteration number at each step.}
+
+\item{maxLineSearchIters}{Maximum iterations for for each line search (one step in the gradient descent algorithm)}
 }
 \value{
 A stationary point of F on the Stiefel manifold.
+}
+\description{
+Find a local optimum of a function defined on the stiefel manifold using algorithms described in Wen and Yin (2013).
 }
 \examples{
 ## Find the first eigenspace spanned by the first P eigenvectors for a large matrix M

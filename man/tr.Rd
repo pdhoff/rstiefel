@@ -6,3 +6,9 @@
 \usage{
 tr(X)
 }
+\arguments{
+\item{X}{Square matrix}
+}
+\description{
+compute the trace of a square matrix
+}

@@ -4,14 +4,22 @@
 \alias{lineSearch}
 \title{A curvilinear search on the Stiefel manifold (Wen and Yin 2013, Algo 1)}
 \usage{
-lineSearch(F, dF, X, rho1, rho2, tauStart, maxIters = 100)
+lineSearch(F, dF, X, rho1, rho2, tauStart, maxIters = 20)
 }
 \arguments{
 \item{F}{A function V(n, p) -> \code{R^1}}
 
+\item{dF}{A function V(n, p) -> \code{R^1}}
+
 \item{X}{an n x p semi-orthogonal matrix (starting point)}
 
-\item{G_x}{an n x p matrix with \code{(G_x)_ij = dF(X)/dX_ij}}
+\item{rho1}{Parameter for Armijo condition.  Between 0 and 1 and usually small, e.g < 0.1}
+
+\item{rho2}{Parameter for Wolfe condition Between 0 and 1 usually large, > 0.9}
+
+\item{tauStart}{Initial step size}
+
+\item{maxIters}{Maximum number of iterations}
 }
 \value{
 A list containing: Y, the semi-orthogonal matrix satisfying the Armijo-Wolfe conditions and tau: the stepsize satisfying these conditions

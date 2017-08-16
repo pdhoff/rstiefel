@@ -7,10 +7,10 @@
 NullC(M)
 }
 \arguments{
-\item{M}{}
+\item{M}{An semi-orthogonal matrix}
 }
 \value{
-An orthonormal matrix N such that t(N) %*% M is a matrix of zeros.
+A semi-orthogonal matrix N such that t(N) %*% M is a matrix of zeros.
 }
 \description{
 Given a matrix M, find a matrix N giving a basis for the null space. This is a modified version of Null from the package MASS.

@@ -7,11 +7,9 @@
 rmf.matrix(M)
 }
 \arguments{
-\item{M}{}
+\item{M}{A matrix parameterizing the von Mises-Fisher, e.g. p(X) ~ etr(M^TX)}
 }
 \value{
-A matrix
-
 An orthonormal matrix of the same dimension as \code{M}.
 }
 \description{

@@ -13,7 +13,7 @@ rbmf.O2(A, B, C, env = FALSE)
 
 \item{C}{A \code{2 x 2} matrix.}
 
-\item{env}{}
+\item{env}{A boolean indicating whether to use a bingham envelop rejection sampler}
 }
 \value{
 A random \code{2 x 2} orthogonal matrix simulated from the Bingham-von Mises-Fisher distribution.

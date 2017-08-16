@@ -5,14 +5,24 @@
 \title{A curvilinear search on the Stiefel manifold with BB steps (Wen and Yin 2013, Algo 2)
 This is based on the line search algorithm described in (Zhang and Hager, 2004)}
 \usage{
-lineSearchBB(F, X, Xprev, G_x, G_xprev, rho, C, maxIters = 100)
+lineSearchBB(F, X, Xprev, G_x, G_xprev, rho, C, maxIters = 20)
 }
 \arguments{
 \item{F}{A function V(n, p) -> R}
 
-\item{X}{an n x p semi-orthogonal matrix}
+\item{X}{an n x p semi-orthogonal matrix (the current )}
+
+\item{Xprev}{an n x p semi-orthogonal matrix (the previous)}
 
 \item{G_x}{an n x p matrix with (G_x)_ij = dF(X)/dX_ij}
+
+\item{G_xprev}{an n x p matrix with (G_xprev)_ij = dF(X_prev)/dX_prev_ij}
+
+\item{rho}{Convergence parameter, usually small (e.g. 0.1)}
+
+\item{C}{C_t+1 = (etaQ_t + F(X_t+1))/Q_t+1 See section 3.2 in Wen and Yin, 2013}
+
+\item{maxIters}{Maximum number of iterations}
 }
 \value{
 A list containing Y: a semi-orthogonal matrix Ytau which satisfies convergence criteria (Eqn 29 in Wen & Yin '13), and tau: the stepsize satisfying these criteria
@@ -30,6 +40,7 @@ dF <- function(V) { - 2*M \%*\% V }
 Xprev <- rustiefel(N, P)
 G_xprev <- dF(Xprev)
 X <- rustiefel(N, P)
+G_x <- dF(X)
 Xprev <- dF(X)
 res <- lineSearchBB(F, X, Xprev, G_x, G_xprev, rho=0.1, C=F(X))
 
