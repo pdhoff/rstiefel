@@ -1,8 +1,7 @@
 #' @title Simulate a Uniformly Distributed Random Orthonormal Matrix
-#' 
-#' Simulate uniformly from \deqn{V(R, m)}
-#' See Chikuse(1994)
-#' 
+#'
+#' @description
+#' Simulate uniformly from \deqn{V(R, m)} (See Chikuse, 1994).
 #' @param m The length of each column vector. 
 #' @param R The number of column vectors. 
 #'

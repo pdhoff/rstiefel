@@ -1,9 +1,17 @@
 #' @title Optimize a function on the Stiefel manifold
-#' 
+#'
+#' @description
+#' Find a local optimum of a function defined on the stiefel manifold using algorithms described in Wen and Yin (2013).
 #' @param F A function V(P, S) -> \code{R^1}
 #' @param dF A function to compute the gradient of F.  Returns a \code{P x S} matrix with \code{dF(X)_ij  = d(F(X))/dX_ij}
 #' @param Vinit The starting point on the stiefel manifold for the optimization
-#' @param method: "bb" or curvilinear 
+#' @param method Line search type: "bb" or curvilinear
+#' @param searchParams List of parameters for the line search algorithm.  If the line search algorithm is the standard curvilinear search than the search parameters are rho1 and rho2.  If the line search algorithm is "bb" then the parameters are rho and eta.
+#' @param tol Convergence tolerance.  Optimization stops when Fprime < abs(tol), an approximate stationary point.  
+#' @param maxIters Maximum iterations for each gradient step
+#' @param maxLineSearchIters Maximum iterations for for each line search (one step in the gradient descent algorithm)
+#' @param verbose Boolean indicating whether to print function value and iteration number at each step.
+#' 
 #' @return A stationary point of F on the Stiefel manifold.
 #' @references (Wen and Yin, 2013)
 #' @examples
@@ -28,7 +36,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
                        searchParams=NULL,
                        tol=1e-5,
                        maxIters=100, verbose=FALSE, 
-                       maxLineSearchIters=100) {
+                       maxLineSearchIters=20) {
 
     P <- nrow(Vinit)
     S <- ncol(Vinit)
@@ -157,7 +165,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' 
 #' @references (Wen and Yin, 2013)
 #' @export
-lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
+lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
 
     G_x <- dF(X)
     
@@ -256,7 +264,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=100) {
 #' 
 #' @references (Wen and Yin, 2013) and (Zhang and Hager, 2004)
 #' @export
-lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
+lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=20) {
 
     n <- nrow(X)
     p <- ncol(X)
@@ -306,6 +314,8 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=100) {
 }
 
 #' @title Compute the trace of a matrix
+#' @description compute the trace of a square matrix
+#' @param X Square matrix
 #' @export
 tr <- function(X) { sum(diag(X)) }
 
