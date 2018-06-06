@@ -13,11 +13,15 @@
 #' @param verbose Boolean indicating whether to print function value and iteration number at each step.
 #' 
 #' @return A stationary point of F on the Stiefel manifold.
+#' @author Alexander Franks
 #' @references (Wen and Yin, 2013)
 #' @examples
-#' ## Find the first eigenspace spanned by the first P eigenvectors for a large matrix M
+#' ## Find the first eigenspace spanned by the first P eigenvectors for a 
+#' ## matrix M. The size of the matrix has been kept small and the tolerance 
+#' ## has been raised to keep the runtime 
+#' ## of this example below the CRAN submission threshold. 
 #' 
-#' N <- 1000
+#' N <- 500
 #' P <- 3
 #' Lam <- diag(c(10, 5, 3, rep(1, N-P)))
 #' U <- rustiefel(N, N)
@@ -27,7 +31,7 @@
 #' dF <- function(V) { - 2*M %*% V }
 #' V = optStiefel(F, dF, Vinit=rustiefel(N, P),
 #'                method="curvilinear",
-#'                searchParams=list(rho1=0.1, rho2=0.9, tau=1))
+#'                searchParams=list(rho1=0.1, rho2=0.9, tau=1),tol=1e-4)
 #'                
 #' print(sprintf("Sum of first %d eigenvalues is %f", P, -F(V)))
 #' 
@@ -162,7 +166,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 #' X <- rustiefel(N, P)
 #' res <- lineSearch(F, dF, X, rho1=0.1, rho2=0.9, tauStart=1)
 #' 
-#' 
+#' @author Alexander Franks
 #' @references (Wen and Yin, 2013)
 #' @export
 lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
@@ -263,6 +267,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
 #' res <- lineSearchBB(F, X, Xprev, G_x, G_xprev, rho=0.1, C=F(X))
 #' 
 #' @references (Wen and Yin, 2013) and (Zhang and Hager, 2004)
+#' @author Alexander Franks
 #' @export
 lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=20) {
 

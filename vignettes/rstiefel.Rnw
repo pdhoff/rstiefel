@@ -15,7 +15,7 @@
 
 \title{Bayesian analysis of matrix data with 
               {\bf rstiefel}} 
-\author{Peter D. Hoff \thanks{Departments of Statistics and Biostatistics, University of Washington, Seattle, WA 98195-4322. This research was supported in part by
+\author{Peter D. Hoff \thanks{Department of Statistical Science, Duke University. This research was supported in part by
 NI-CHD grant 1R01HD067509-01A1. } }
 \maketitle
 

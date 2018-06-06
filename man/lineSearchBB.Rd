@@ -48,3 +48,6 @@ res <- lineSearchBB(F, X, Xprev, G_x, G_xprev, rho=0.1, C=F(X))
 \references{
 (Wen and Yin, 2013) and (Zhang and Hager, 2004)
 }
+\author{
+Alexander Franks
+}

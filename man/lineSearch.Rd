@@ -36,8 +36,10 @@ dF <- function(V) { - 2*M \%*\% V }
 X <- rustiefel(N, P)
 res <- lineSearch(F, dF, X, rho1=0.1, rho2=0.9, tauStart=1)
 
-
 }
 \references{
 (Wen and Yin, 2013)
+}
+\author{
+Alexander Franks
 }

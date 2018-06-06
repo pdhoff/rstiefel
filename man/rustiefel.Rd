@@ -2,21 +2,36 @@
 % Please edit documentation in R/rustiefel.R
 \name{rustiefel}
 \alias{rustiefel}
-\title{Simulate a Uniformly Distributed Random Orthonormal Matrix}
+\title{Siumlate a Uniformly Distributed Random Orthonormal Matrix}
 \usage{
 rustiefel(m, R)
 }
 \arguments{
-\item{m}{The length of each column vector.}
+\item{m}{the length of each column vector.}
 
-\item{R}{The number of column vectors.}
+\item{R}{the number of column vectors.}
 }
 \value{
-An \code{m x R}  uniformly distributed random semi-orthogonal matrix
+an \code{m*R} orthonormal matrix.
 }
 \description{
-Simulate uniformly from \deqn{V(R, m)} (See Chikuse, 1994).
+Siumlate a random orthonormal matrix from the uniform distribution on the
+Stiefel manifold.
 }
 \examples{
-rustiefel(10, 2)
+
+## The function is currently defined as
+function (m, R) 
+{
+    X <- matrix(rnorm(m * R), m, R)
+    tmp <- eigen(t(X) \%*\% X)
+    X \%*\% (tmp$vec \%*\% sqrt(diag(1/tmp$val, nrow = R)) \%*\% t(tmp$vec))
+  }
+
+}
+\references{
+Hoff(2007)
+}
+\author{
+Peter Hoff
 }

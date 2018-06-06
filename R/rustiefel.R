@@ -1,19 +1,32 @@
-#' @title Simulate a Uniformly Distributed Random Orthonormal Matrix
-#'
-#' @description
-#' Simulate uniformly from \deqn{V(R, m)} (See Chikuse, 1994).
-#' @param m The length of each column vector. 
-#' @param R The number of column vectors. 
-#'
-#' @return An \code{m x R}  uniformly distributed random semi-orthogonal matrix
-#' @export
-#'
+#' Siumlate a Uniformly Distributed Random Orthonormal Matrix
+#' 
+#' Siumlate a random orthonormal matrix from the uniform distribution on the
+#' Stiefel manifold.
+#' 
+#' 
+#' @param m the length of each column vector.
+#' @param R the number of column vectors.
+#' @return an \code{m*R} orthonormal matrix.
+#' @author Peter Hoff
+#' @references Hoff(2007)
 #' @examples
-#' rustiefel(10, 2)
-rustiefel <- function(m, R) {
-  
-  # note R is given second, the result is an m * R matrix
-  X <- matrix(rnorm(m*R), m, R)
-  tmp <- eigen(t(X) %*% X)
-  X %*% (tmp$vec %*% sqrt(diag(1/tmp$val, nrow=R)) %*%t(tmp$vec))
+#' 
+#' ## The function is currently defined as
+#' function (m, R) 
+#' {
+#'     X <- matrix(rnorm(m * R), m, R)
+#'     tmp <- eigen(t(X) %*% X)
+#'     X %*% (tmp$vec %*% sqrt(diag(1/tmp$val, nrow = R)) %*% t(tmp$vec))
+#'   }
+#' 
+#' @export rustiefel
+rustiefel <-
+function(m,R)
+{
+  #simulate uniformly from V_{R,m}  
+  #see Chikuse 
+  #note R is given second, the result is an m*R matrix
+  X<-matrix(rnorm(m*R),m,R)
+  tmp<-eigen(t(X)%*%X)
+  X%*%( tmp$vec%*%sqrt(diag(1/tmp$val,nrow=R))%*%t(tmp$vec) )
 }

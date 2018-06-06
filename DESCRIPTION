@@ -1,15 +1,12 @@
 Package: rstiefel
 Type: Package
-Title: Random orthonormal matrix generation and optimization on the Stiefel manifold
+Title: Random Orthonormal Matrix Generation and Optimization on the Stiefel Manifold
 Version: 0.20
-Date: 2017-8-01
+Date: 2018-06-06
 Author: Peter Hoff and Alexander Franks
-Maintainer: Petfer Hoff <peter.hoff@duke.edu> and Alexander Franks <afranks@pstat.ucsb.edu>
-Description: This package includes functions to simulate random orthonormal matrices from linear and quadratic exponential family distributions on the Stiefel manifold. The most general type of distribution covered is the matrix-variate  Bingham-von Mises-Fisher distribution. Most of the simulation methods are presented in Hoff(2009) "Simulation of the Matrix Bingham-von Mises-Fisher Distribution, With Applications to Multivariate and Relational Data." The package also includes functions for optimzation on the Stiefel manifold based on algoirthms described in Wen and Yin (2013) "A feasible method for optimization with orthogonality constraints"
+Maintainer: Peter Hoff <peter.hoff@duke.edu> 
+Description: Simulation of random orthonormal matrices from linear and quadratic exponential family distributions on the Stiefel manifold. The most general type of distribution covered is the matrix-variate  Bingham-von Mises-Fisher distribution. Most of the simulation methods are presented in Hoff(2009) "Simulation of the Matrix Bingham-von Mises-Fisher Distribution, With Applications to Multivariate and Relational Data" <doi:10.1198/jcgs.2009.07177>. The package also includes functions for optimzation on the Stiefel manifold based on algoirthms described in Wen and Yin (2013) "A feasible method for optimization with orthogonality constraints" <doi:10.1007/s10107-012-0584-1>. 
 License: GPL-3
-Packaged: 2016-12-05 15:11:52 UTC; hornik
-NeedsCompilation: yes
-Repository: CRAN
-Date/Publication: 2016-12-05 18:28:48
 RoxygenNote: 6.0.1
-Depends: R (>= 2.10)
+Depends: R (>= 2.10) 
+
