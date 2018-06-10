@@ -7,7 +7,7 @@
 /***  ***/
 
 
-void rW(double *kap, int *m, double *W)
+void rWc(double *kap, int *m, double *W)
 {
   /*  described in Wood(1994) */
   GetRNGstate();
@@ -73,7 +73,7 @@ double rtheta_bmf(double k, double a, double b, double c)
 /***  ***/
 
 
-void ry_bmf(double *y, double *l, double *d, int *n)
+void ry_bmfc(double *y, double *l, double *d, int *n)
 {
   /* described in Hoff(2009) */
 
@@ -120,7 +120,6 @@ double rtheta_bing(double k, double a)
   double g=k; 
   double lrth=0.0;
   double lrmx=0.0;
-  double ct;
 
   if(a>0.0)
   { 
@@ -135,11 +134,12 @@ double rtheta_bing(double k, double a)
     lrth=a*th+(k-g)*log(1-th);
   }
   return th;
-}
+
+  }
 
 /*    */
 
-void ry_bing(double *y, double *l, int *n)
+void ry_bingc(double *y, double *l, int *n)
 {
   /* described in Hoff(2009) */
   /* should be the same as ry_bmf(y,l,rep(0,n),n) */
@@ -148,7 +148,7 @@ void ry_bing(double *y, double *l, int *n)
   int i,j;
   double theta;
   double k= .5*(*n-1.0)  ;
-  double smyi, omyi, a, b;
+  double smyi, omyi, a;
 
   for(i=0; i<*n; i++)
   {
@@ -169,7 +169,17 @@ void ry_bing(double *y, double *l, int *n)
 
 /*    */
 
+static const R_CMethodDef CEntries[] = {
+  {"rWc",      (DL_FUNC) &rWc,      3},
+  {"ry_bingc", (DL_FUNC) &ry_bingc, 3},
+  {"ry_bmfc",  (DL_FUNC) &ry_bmfc,  4},
+  {NULL, NULL, 0}
+};
 
-
+void R_init_rstiefel(DllInfo *dll)
+{
+  R_registerRoutines(dll, CEntries, NULL, NULL, NULL);
+  R_useDynamicSymbols(dll, FALSE);
+}
 
 
