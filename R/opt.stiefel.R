@@ -36,7 +36,7 @@
 #' @export
 optStiefel <- function(F, dF, Vinit, method="bb",
                        searchParams=NULL,
-                       tol=1e-5,
+                       tol=1e-12,
                        maxIters=100, verbose=FALSE, 
                        maxLineSearchIters=20) {
 
@@ -99,7 +99,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
     Fprime <- Inf
 
     ## While ||gradF(V)|| > eps
-    while(abs(Fprime) > tol & iter < maxIters) {
+    while(abs(Fprime) > abs(Fcur)*tol & iter < maxIters) {
         
         Fprev <- Fcur
         if ( method == "bb") {
