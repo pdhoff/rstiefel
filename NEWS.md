@@ -1,4 +1,4 @@
-# rstiefel 0.30
+# rstiefel 1.0.0
 
 * The function 	`opt.stiefel` has been sped-up dramatically. 
 
