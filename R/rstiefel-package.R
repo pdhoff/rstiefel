@@ -4,7 +4,7 @@
 #' Simulation of random orthonormal matrices from linear and quadratic exponential family distributions on the Stiefel manifold. The most general type of distribution covered is the matrix-variate  Bingham-von Mises-Fisher distribution. Most of the simulation methods are presented in Hoff(2009) "Simulation of the Matrix Bingham-von Mises-Fisher Distribution, With Applications to Multivariate and Relational Data" <doi:10.1198/jcgs.2009.07177>. The package also includes functions for optimization on the Stiefel manifold based on algorithms described in Wen and Yin (2013) "A feasible method for optimization with orthogonality constraints" <doi:10.1007/s10107-012-0584-1>.
 #' 
 #' \tabular{ll}{ Package: \tab rstiefel\cr Type: \tab Package\cr Version: \tab
-#' 0.20\cr Date: \tab 2018-06-06\cr License: \tab GPL-3\cr }
+#' 1.0.0\cr Date: \tab 2019-02-18\cr License: \tab GPL-3\cr }
 #' 
 #' @name rstiefel-package
 #' @aliases rstiefel-package rstiefel

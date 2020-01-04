@@ -13,7 +13,7 @@
 
 
 
-\title{Bayesian analysis of matrix data with 
+\title{Matrix modeling with 
               {\bf rstiefel}} 
 \author{Peter D. Hoff \thanks{Department of Statistical Science, Duke University. This research was supported in part by
 NI-CHD grant 1R01HD067509-01A1. } }

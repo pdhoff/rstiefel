@@ -4,7 +4,7 @@
 \alias{optStiefel}
 \title{Optimize a function on the Stiefel manifold}
 \usage{
-optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-05,
+optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-12,
   maxIters = 100, verbose = FALSE, maxLineSearchIters = 20)
 }
 \arguments{
