@@ -1,7 +1,7 @@
 # rstiefel
 Simulation from distributions on the Stiefel manifold
 
-Install the development:
+Install the latest version:
 
 ```
 install.packages("devtools")
