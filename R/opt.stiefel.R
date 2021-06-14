@@ -36,7 +36,7 @@
 #' @export
 optStiefel <- function(F, dF, Vinit, method="bb",
                        searchParams=NULL,
-                       tol=1e-12,
+                       tol=1e-8,
                        maxIters=100, verbose=FALSE, 
                        maxLineSearchIters=20) {
 
@@ -48,8 +48,8 @@ optStiefel <- function(F, dF, Vinit, method="bb",
         if(is.null(searchParams)) {
 
             ## Default parameters 
-            rho <- 0.1
-            eta <- 0.2
+            rho <- 0.01
+            eta <- 0.9
 
         } else {
             passedParams <- c("rho", "eta") %in% names(searchParams)
@@ -64,7 +64,7 @@ optStiefel <- function(F, dF, Vinit, method="bb",
         
         Qcur <- 1
         Ccur <- F(Vinit)
-        Vprev <- rustiefel(P, S)
+        
 
     } else if (method == "curvilinear") {
 
@@ -90,17 +90,21 @@ optStiefel <- function(F, dF, Vinit, method="bb",
 
         
     }
-
+    
+    Vprev <- rustiefel(P, S)            
     V <- Vinit
     Fcur <- F(V)
     Fprev <- Inf
     Gcur <- Gprev <- dF(V)
     iter <- 1
     Fprime <- Inf
+    
+    minF <- Inf
+    minV <- V
 
     ## While ||gradF(V)|| > eps
-    while(abs(Fprime) > abs(Fcur)*tol & iter < maxIters) {
-        
+    while(abs(Fprime) > abs(Fcur)*tol & norm(V - Vprev) > 1e-8 & iter < maxIters) {
+
         Fprev <- Fcur
         if ( method == "bb") {
 
@@ -116,20 +120,30 @@ optStiefel <- function(F, dF, Vinit, method="bb",
             Qcur <- eta*Qcur + 1
             Ccur <- (eta*Qprev*Ccur + Fcur) / Qcur
             Gcur <- dF(V)
+
+            tau <- res$tau
+            
+            ## bb is not a descent method
+            minV <- V
+            minF <- Fcur
             
         } else if ( method == "curvilinear" ) { 
-
+            
             res <- lineSearch(F, dF, V, rho1, rho2, tau, maxIters=maxLineSearchIters)
+            Vprev <- V
             V <- res$Y
             tau <- res$tau
 
             Fcur <- F(V)
             Gprev <- Gcur
             Gcur <- dF(V)
+            
+            minV <- V
+            minF <- Fcur
         }
 
         if(verbose) {
-            print(sprintf("Iteration %i: F = %f, dF = %f", iter, Fcur, Fprime))
+            print(sprintf("Iteration %i: F = %f, dF = %f, tau = %f", iter, Fcur, Fprime, tau))
         }
 
         ## compute ||gradF(V)||
@@ -177,23 +191,23 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
     reached <- FALSE
     tau <- tauStart
     
-    A <- G_x %*% t(X) - X %*% t(G_x)
+    A <- tcrossprod(G_x, X) - tcrossprod(X, G_x)
     U <- cbind(G_x, X)
     V <- cbind(X, -1*G_x)
 
     ## If tau is too large condition number is too large
     ## and matrix can't be inverted, so reduce the value of initTau until its invertible
-    while(kappa(diag(2*p) + tau/2*t(V) %*% U) > 1e12 ) {
+    while(kappa(diag(2*p) + tau/2 * crossprod(V, U)) > 1e12 ) {
         tau <- tau/2
     }
 
-    HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
+    HV <- tcrossprod(solve(diag(2*p) + tau/2 * crossprod(V, U)), V)
     
     Ytau <- X - tau * U %*% (HV %*% X)
-    FprimeY0 <- tr( t(G_x) %*% -A %*% X )
+    FprimeY0 <- tr(crossprod(G_x, -A) %*% X )
 
-    B <- diag(n) - tau/2*U %*% HV
-    FprimeYtau <- tr( t(dF(Ytau)) %*% -B %*% A %*% (X + Ytau) / 2 )
+    B <- diag(n) - tau/2 * U %*% HV
+    FprimeYtau <- tr(crossprod(dF(Ytau), -B) %*% A %*% (X + Ytau) / 2 )
 
     ## Check Armijo-Wolfe conditions
     iter <- 0
@@ -208,6 +222,7 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
 
         if(iter > maxIters) {
             print("Reached maximum iterations in line search.")
+            Ytau <- X
             break
         }
 
@@ -222,11 +237,11 @@ lineSearch <- function(F, dF, X, rho1, rho2, tauStart, maxIters=20) {
                 tau <- (lower + upper) / 2
         }
 
-        HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
+        HV <- tcrossprod(solve(diag(2*p) + tau/2 * crossprod(V, U)) , V)
         Ytau <- X - tau * U %*% (HV %*% X)
         ## B <- diag(n) - tau/2*U %*% HV
         B <- solve(diag(n) + tau/2 * A)
-        FprimeYtau <- tr( t(dF(Ytau)) %*% -B %*% A %*% (X + Ytau) / 2 )
+        FprimeYtau <- tr( crossprod(dF(Ytau), -B) %*% A %*% (X + Ytau) / 2 )
         
         Armijo <- F(Ytau) > (F(X) + rho1*tau*FprimeY0)
         Wolfe <- FprimeYtau < rho2*FprimeY0
@@ -276,34 +291,35 @@ lineSearchBB <- function(F, X, Xprev, G_x, G_xprev, rho, C, maxIters=20) {
     V <- cbind(X, -1*G_x)
 
     Sk <- X - Xprev
-    Mk <- (G_x - X %*% (t(G_x) %*% X)) - (G_xprev - Xprev %*% (t(G_xprev) %*% Xprev))
+    Mk <- (G_x - X %*% crossprod(G_x, X)) - (G_xprev - Xprev %*% crossprod(G_xprev, Xprev))
 
-    tau <- tr(t(Sk) %*% Sk) / abs(tr(t(Sk) %*%  Mk))
+    tau <- sum(Sk^2) / abs(tr(crossprod(Sk, Mk)))
     
     ## If tau is too large condition number is too large
     ## and matrix can't be inverted, so reduce
-    while(kappa(diag(2*p) + tau/2*t(V) %*% U) > 1e12 ) {
+    while(kappa(diag(2*p) + tau/2 * crossprod(V, U)) > 1e12 ) {
         tau <- tau/2
     }
 
 
-    HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
+    HV <- tcrossprod(solve(diag(2*p) + tau/2 * crossprod(V, U)), V)
     Ytau <- X - tau * U %*% (HV %*% X)
 
-    tGX <- t(G_x) %*% X
-    FprimeY0 <- -sum(diag((t(G_x) %*% G_x) %*% (t(X) %*% X) - tGX %*% tGX))    
+    tGX <- crossprod(G_x, X)
+    FprimeY0 <- -sum(diag(crossprod(G_x, G_x) %*% crossprod(X, X) - tGX %*% tGX))
 
     iter <- 1
-    
     while(F(Ytau) > C + rho*tau*FprimeY0) {
-            tau <- tau/2
+          
+        tau <- tau/2
 
         if(iter > maxIters) {
             print("Reached maximum iterations in line search.")
+            Ytau <- X
             break
         }
 
-        HV <- solve(diag(2*p) + tau/2 * t(V) %*% U) %*% t(V)
+        HV <- tcrossprod(solve(diag(2*p) + tau/2 * crossprod(V, U)), V)
         Ytau <- X - tau * U %*% (HV %*% X)
 
         iter <- iter + 1

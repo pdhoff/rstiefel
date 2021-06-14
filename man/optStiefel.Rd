@@ -30,7 +30,7 @@ optStiefel(F, dF, Vinit, method = "bb", searchParams = NULL, tol = 1e-12,
 A stationary point of F on the Stiefel manifold.
 }
 \description{
-Find a local optimum of a function defined on the stiefel manifold using algorithms described in Wen and Yin (2013).
+Find a local minimum of a function defined on the stiefel manifold using algorithms described in Wen and Yin (2013).
 }
 \examples{
 ## Find the first eigenspace spanned by the first P eigenvectors for a 
