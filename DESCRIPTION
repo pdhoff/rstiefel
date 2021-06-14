@@ -1,8 +1,8 @@
 Package: rstiefel
 Type: Package
 Title: Random Orthonormal Matrix Generation and Optimization on the Stiefel Manifold
-Version: 1.0.0
-Date: 2019-02-18
+Version: 1.0.1
+Date: 2021-06-14
 Author: Peter Hoff and Alexander Franks
 Maintainer: Peter Hoff <peter.hoff@duke.edu> 
 Description: Simulation of random orthonormal matrices from linear and quadratic exponential family distributions on the Stiefel manifold. The most general type of distribution covered is the matrix-variate  Bingham-von Mises-Fisher distribution. Most of the simulation methods are presented in Hoff(2009) "Simulation of the Matrix Bingham-von Mises-Fisher Distribution, With Applications to Multivariate and Relational Data" <doi:10.1198/jcgs.2009.07177>. The package also includes functions for optimization on the Stiefel manifold based on algorithms described in Wen and Yin (2013) "A feasible method for optimization with orthogonality constraints" <doi:10.1007/s10107-012-0584-1>. 

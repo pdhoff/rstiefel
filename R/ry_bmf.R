@@ -16,7 +16,7 @@
 #' ## The function is currently defined as
 #' function (y, l, d) 
 #' {
-#'     .C("ry_bmf", y = as.double(y), l = as.double(l), d = as.double(d), 
+#'     .C("ry_bmf", PACKAGE="rstiefel", y = as.double(y), l = as.double(l), d = as.double(d), 
 #'         n = as.integer(length(y)))$y
 #'   }
 #' 
@@ -24,6 +24,6 @@
 ry_bmf <-
 function(y,l,d)
 {
-  .C("ry_bmfc",y=as.double(y),l=as.double(l),d=as.double(d),
+  .C("ry_bmfc",PACKAGE="rstiefel",y=as.double(y),l=as.double(l),d=as.double(d),
                n=as.integer(length(y)))$y
 }

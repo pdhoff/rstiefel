@@ -15,7 +15,7 @@
 #' ## The function is currently defined as
 #' function (y, l) 
 #' {
-#'     .C("ry_bing", y = as.double(y), l = as.double(l), n = as.integer(length(y)))$y
+#'     .C("ry_bing", PACKAGE="rstiefel", y = as.double(y), l = as.double(l), n = as.integer(length(y)))$y
 #'   }
 #' 
 #' @export ry_bing
@@ -26,5 +26,5 @@ function(y,l)
   #y with invariant distribution 
   #p(y|l) \propto \exp{ sum(l*y^2) } 
   #with respect to the uniform measure on the sphere
-  .C("ry_bingc",y=as.double(y),l=as.double(l),n=as.integer(length(y)))$y
+  .C("ry_bingc",PACKAGE="rstiefel",y=as.double(y),l=as.double(l),n=as.integer(length(y)))$y
 }

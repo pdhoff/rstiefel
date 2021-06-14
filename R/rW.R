@@ -15,7 +15,7 @@
 #' ## The function is currently defined as
 #' function (kap, m) 
 #' {
-#'     .C("rW", kap = as.double(kap), m = as.integer(m), w = double(1))$w
+#'     .C("rW",PACKAGE="rstiefel",kap = as.double(kap), m = as.integer(m), w = double(1))$w
 #'   }
 #' 
 #' @export rW
@@ -23,5 +23,5 @@ rW <-
 function(kap,m)
 {
   #simulate W as described in Wood(1994)
-  .C("rWc",kap=as.double(kap),m=as.integer(m),w=double(1))$w
+  .C("rWc",PACKAGE="rstiefel",kap=as.double(kap),m=as.integer(m),w=double(1))$w
 }
